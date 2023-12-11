@@ -47,17 +47,24 @@ class Movie(db.Model):
         return f'<Movie {self.title}>'
 
 
+def update_movie_rankings():
+    movies = Movie.query.order_by(Movie.rating.desc(), Movie.title).all()
+    for i, movie in enumerate(movies):
+        movie.ranking = i + 1
+    db.session.commit()
+
+
 @app.route("/")
 def home():
-    movies = db.session.query(Movie).all()
+    movies = Movie.query.order_by(Movie.ranking).all()
     return render_template("index.html", movies=movies)
 
 
 @app.route("/add", methods=["GET", "POST"])
 def add_movie():
     form = FindMovieForm()
-    movie_title = form.movie_title.data
     if form.validate_on_submit():
+        movie_title = form.movie_title.data
         response = requests.get(url=MOVIE_DB_SEARCH_URL, params={"api_key": API_KEY, "query": movie_title})
         data = response.json()["results"]
         return render_template("select.html", options=data)
@@ -67,7 +74,6 @@ def add_movie():
 @app.route("/find/<int:movie_id>", methods=['GET', 'POST'])
 def find_movie(movie_id):
     movie_api_url = f"{MOVIE_DB_INFO_URL}/{movie_id}"
-
     response = requests.get(movie_api_url, params={"api_key": API_KEY, "language": "en-US"})
     data = response.json()
 
@@ -83,11 +89,7 @@ def find_movie(movie_id):
     db.session.add(new_movie)
     db.session.commit()
 
-    movies = Movie.query.order_by(Movie.rating.desc()).all()
-    for i, movie in enumerate(movies):
-        movie.ranking = i + 1 if movie.rating is not None else None
-    db.session.commit()
-
+    update_movie_rankings()
     return redirect(url_for('home'))
 
 
@@ -96,20 +98,16 @@ def edit(movie_id):
     movie = Movie.query.get_or_404(movie_id)
     form = UpdateMovie()
 
-    if request.method == 'POST':
-        new_rating = request.form.get('new_rating')
-        new_review = request.form.get('new_review')
-        movie.rating = float(new_rating)
-        movie.review = str(new_review)
+    if form.validate_on_submit():
+        movie.rating = float(form.new_rating.data)
+        movie.review = form.new_review.data
         db.session.commit()
 
-        movies = Movie.query.order_by(Movie.rating.desc()).all()
-        for i, movie in enumerate(movies):
-            movie.ranking = i + 1
-        db.session.commit()
-
+        update_movie_rankings()
         return redirect(url_for('home'))
 
+    form.new_rating.data = str(movie.rating)
+    form.new_review.data = movie.review
     return render_template('edit.html', movie=movie, form=form)
 
 
@@ -118,10 +116,12 @@ def delete(movie_id):
     movie_to_delete = Movie.query.get_or_404(movie_id)
     db.session.delete(movie_to_delete)
     db.session.commit()
+
+    update_movie_rankings()
     return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
