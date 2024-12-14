@@ -1,16 +1,9 @@
-version: "3.8"
+version: "3.11"
 
 services:
   web:
     build: .
     ports:
       - "5005:5005"
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - API_KEY=${API_KEY}
-      - MOVIE_DB_INFO_URL=${MOVIE_DB_INFO_URL}
-      - MOVIE_DB_SEARCH_URL=${MOVIE_DB_SEARCH_URL}
-      - MOVIE_IMG_URL=${MOVIE_DB_IMG_URL}
-      - SQLALCHEMY_DATABASE_URI={SQLALCHEMY_DATABASE_URI}
     volumes:
       - ./instance:/app/instance
