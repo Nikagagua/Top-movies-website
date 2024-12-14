@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   web:
     build: .
@@ -10,8 +9,7 @@ services:
       - API_KEY=${API_KEY}
       - MOVIE_DB_INFO_URL=${MOVIE_DB_INFO_URL}
       - MOVIE_DB_SEARCH_URL=${MOVIE_DB_SEARCH_URL}
-      - MOVIE_IMG_URL=${MOVIE_DB_IMG_URL}
-      - SQLALCHEMY_DATABASE_URI=sqlite:///instance/top-10-movies.db
+      - MOVIE_IMG_URL=${MOVIE_IMG_URL}
+      - SQLALCHEMY_DATABASE_URI=sqlite:////app/instance/top-10-movies.db
     volumes:
-      - ./instance:/app/instance:rw
-    user: "${UID}:${GID}"
+      - ${PWD}/instance:/app/instance:rw

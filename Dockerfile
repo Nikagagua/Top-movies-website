@@ -2,9 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=main.py
 ENV FLASK_ENV=production
 
@@ -17,7 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN mkdir -p instance
+RUN mkdir -p /app/instance && \
+    chmod 777 /app/instance
 
 EXPOSE 5005
 
