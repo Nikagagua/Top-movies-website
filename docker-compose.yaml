@@ -1,4 +1,4 @@
-version: "3.11"
+version: "3.8"
 
 services:
   web:
@@ -13,4 +13,5 @@ services:
       - MOVIE_IMG_URL=${MOVIE_DB_IMG_URL}
       - SQLALCHEMY_DATABASE_URI=sqlite:///instance/top-10-movies.db
     volumes:
-      - ./instance:/app/instance
+      - ./instance:/app/instance:rw
+    user: "${UID}:${GID}"
