@@ -11,6 +11,6 @@ services:
       - MOVIE_DB_INFO_URL=${MOVIE_DB_INFO_URL}
       - MOVIE_DB_SEARCH_URL=${MOVIE_DB_SEARCH_URL}
       - MOVIE_IMG_URL=${MOVIE_DB_IMG_URL}
-      - SQLALCHEMY_DATABASE_URI=sqlite:///instance/movies.db
+      - SQLALCHEMY_DATABASE_URI={SQLALCHEMY_DATABASE_URI}
     volumes:
       - ./instance:/app/instance
