@@ -3,3 +3,6 @@
 *log
 *pyc
 .DS_Store
+*venv
+__pycache__
+*.ropeproject
