@@ -28,6 +28,7 @@ app.config.update(
 db = SQLAlchemy(app)
 Bootstrap(app)
 
+
 class FindMovieForm(FlaskForm):
     movie_title = StringField("Movie Title", validators=[DataRequired()])
     submit = SubmitField("Add Movie")
