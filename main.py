@@ -9,8 +9,7 @@ import requests
 import os
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
-Bootstrap(app)
+
 
 load_dotenv(".env")
 SECRET_KEY = os.getenv("SECRET_KEY") or ""
@@ -18,9 +17,16 @@ API_KEY = os.getenv("API_KEY") or ""
 MOVIE_DB_INFO_URL = os.getenv("MOVIE_DB_INFO_URL") or ""
 MOVIE_DB_SEARCH_URL = os.getenv("MOVIE_DB_SEARCH_URL") or ""
 MOVIE_IMG_URL = os.getenv("MOVIE_DB_IMG_URL") or ""
-SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI") or ""
-SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS") or ""
 
+app.config.update(
+    SECRET_KEY=os.getenv("SECRET_KEY"),
+    SQLALCHEMY_DATABASE_URI=os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite://"),
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+)
+
+
+db = SQLAlchemy(app)
+Bootstrap(app)
 
 class FindMovieForm(FlaskForm):
     movie_title = StringField("Movie Title", validators=[DataRequired()])
